@@ -1,3 +1,4 @@
+import FormModal from "@/app/_components/FormModal";
 import ImageButton from "@/app/_components/ImageButton";
 import Pagination from "@/app/_components/Pagination";
 import SearchField from "@/app/_components/SearchField";
@@ -53,8 +54,8 @@ export default function Page() {
           {role === "admin" ||
             (role === "teacher" && (
               <>
-                {/* <FormModal table="exam" type="update" data={item} />
-                <FormModal table="exam" type="delete" id={item.id} /> */}
+                <FormModal table="exam" type="update" data={item} />
+                <FormModal table="exam" type="delete" id={item.id} />
               </>
             ))}
         </div>
@@ -88,15 +89,7 @@ export default function Page() {
               width={14}
               height={14}
             />
-            {role === "admin" && (
-              <ImageButton
-                btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-                img="/plus.png"
-                width={14}
-                height={14}
-              />
-            )}
+            {role === "admin" && <FormModal table="exam" type="create" />}
           </div>
         </div>
       </div>

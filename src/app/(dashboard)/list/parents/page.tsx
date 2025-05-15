@@ -6,6 +6,7 @@ import Table from "@/app/_components/Table";
 import ImageButton from "@/app/_components/ImageButton";
 
 import { parentsData, role } from "@/app/_lib/data";
+import FormModal from "@/app/_components/FormModal";
 
 type Parent = {
   id: number;
@@ -59,22 +60,11 @@ export default function Page() {
       <td className="hidden md:table-cell">{item.address}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <ImageButton
-              btnStyles="size-7 flex items-center justify-center rounded-full bg-lamaSky"
-              img="/view.png"
-              width={16}
-              height={16}
-            />
-          </Link>
           {role === "admin" && (
-            <ImageButton
-              btnStyles="size-7 flex items-center justify-center rounded-full bg-lamaPurple"
-              img="/delete.png"
-              width={16}
-              height={16}
-            />
-            // <FormModal table="teacher" type="delete" id={item.id} />
+            <>
+              <FormModal table="parent" type="update" data={item} />
+              <FormModal table="parent" type="delete" id={item.id} />
+            </>
           )}
         </div>
       </td>
@@ -107,15 +97,7 @@ export default function Page() {
               width={14}
               height={14}
             />
-            {role === "admin" && (
-              <ImageButton
-                btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-                img="/plus.png"
-                width={14}
-                height={14}
-              />
-            )}
+            {role === "admin" && <FormModal table="parent" type="create" />}
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import Table from "@/app/_components/Table";
 import ImageButton from "@/app/_components/ImageButton";
 
 import { role, teachersData } from "@/app/_lib/data";
+import FormModal from "@/app/_components/FormModal";
 
 type Teacher = {
   id: number;
@@ -91,13 +92,7 @@ export default function Page() {
             />
           </Link>
           {role === "admin" && (
-            <ImageButton
-              btnStyles="size-7 flex items-center justify-center rounded-full bg-lamaPurple"
-              img="/delete.png"
-              width={16}
-              height={16}
-            />
-            // <FormModal table="teacher" type="delete" id={item.id} />
+            <FormModal table="teacher" type="delete" id={item.id} />
           )}
         </div>
       </td>
@@ -128,15 +123,7 @@ export default function Page() {
               width={14}
               height={14}
             />
-            {role === "admin" && (
-              <ImageButton
-                btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-                img="/plus.png"
-                width={14}
-                height={14}
-              />
-            )}
+            {role === "admin" && <FormModal table="teacher" type="create" />}
           </div>
         </div>
       </div>

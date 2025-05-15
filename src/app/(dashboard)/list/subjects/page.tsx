@@ -7,6 +7,7 @@ import SearchField from "@/app/_components/SearchField";
 import Table from "@/app/_components/Table";
 
 import { role, subjectsData } from "@/app/_lib/data";
+import FormModal from "@/app/_components/FormModal";
 
 type Subject = {
   id: number;
@@ -42,8 +43,8 @@ export default function Page() {
         <div className="flex items-center gap-2">
           {role === "admin" && (
             <>
-              {/* <FormModal table="subject" type="update" data={item} />
-              <FormModal table="subject" type="delete" id={item.id} /> */}
+              <FormModal table="subject" type="update" data={item} />
+              <FormModal table="subject" type="delete" id={item.id} />
             </>
           )}
         </div>
@@ -77,15 +78,7 @@ export default function Page() {
               width={14}
               height={14}
             />
-            {role === "admin" && (
-              <ImageButton
-                btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-                img="/plus.png"
-                width={14}
-                height={14}
-              />
-            )}
+            {role === "admin" && <FormModal table="subject" type="create" />}
           </div>
         </div>
       </div>
