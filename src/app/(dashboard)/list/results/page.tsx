@@ -1,26 +1,45 @@
 import FormModal from "@/app/_components/FormModal";
-import ImageButton from "@/app/_components/ImageButton";
-import Pagination from "@/app/_components/Pagination";
-import SearchField from "@/app/_components/SearchField";
-import Table from "@/app/_components/Table";
+import ListPage from "@/app/_components/ListPage";
 
-import { resultsData, role } from "@/app/_lib/data";
+import { role } from "@/app/_lib/data";
+import { PageProps } from "@/app/_Validators/searchParams-validator";
+import useGetResults from "./useGetResults";
+import { dateFormatter } from "@/app/_Validators/dateFormatter";
 
-type Result = {
+type ResultList = {
   id: number;
-  subject: string;
-  class: string;
-  teacher: string;
-  student: string;
-  type: "exam" | "assignment";
-  date: string;
   score: number;
+  student: {
+    name: string;
+    surname: string;
+  };
+  exam: {
+    title: string;
+    id: number;
+    startTime: Date;
+    endTime: Date;
+    lessonId: number;
+    lesson: {
+      class: { name: string };
+      teacher: { name: string; surname: string };
+    };
+  } | null;
+  assignment: {
+    title: string;
+    id: number;
+    startDate: Date;
+    lessonId: number;
+    lesson: {
+      class: { name: string };
+      teacher: { name: string; surname: string };
+    };
+  } | null;
 };
 
 const columns = [
   {
-    header: "Subject Name",
-    accessor: "name",
+    header: "Title",
+    accessor: "title",
   },
   {
     header: "Student",
@@ -52,18 +71,31 @@ const columns = [
   },
 ];
 
-export default function Page() {
-  const renderRow = (item: Result) => (
+const renderRow = (item: ResultList) => {
+  const assessment = item.exam || item.assignment;
+
+  if (!assessment) return null;
+  const isExam = "startTime" in assessment;
+
+  return (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
-      <td className="flex items-center gap-4 p-4">{item.subject}</td>
-      <td>{item.student}</td>
+      <td className="flex items-center gap-4 p-4">{assessment?.title}</td>
+      <td>{item.student.name + " " + item.student.surname}</td>
       <td className="hidden md:table-cell">{item.score}</td>
-      <td className="hidden md:table-cell">{item.teacher}</td>
-      <td className="hidden md:table-cell">{item.class}</td>
-      <td className="hidden md:table-cell">{item.date}</td>
+      <td className="hidden md:table-cell">
+        {assessment?.lesson.teacher.name +
+          " " +
+          assessment?.lesson.teacher.surname}
+      </td>
+      <td className="hidden md:table-cell">{assessment?.lesson.class.name}</td>
+      <td className="hidden md:table-cell">
+        {isExam
+          ? dateFormatter(assessment.startTime)
+          : dateFormatter(assessment.startDate)}
+      </td>
       <td>
         <div className="flex items-center gap-2">
           {role === "admin" ||
@@ -77,41 +109,20 @@ export default function Page() {
       </td>
     </tr>
   );
+};
+
+export default function Page({ searchParams }: PageProps) {
+  const { getQuery, fetchData } = useGetResults();
 
   return (
-    <div className="bg-white flex-1 rounded-md p-4 mt-0">
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold capitalize">
-          All results
-        </h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <SearchField
-            parentDivStyles="w-full md:w-auto items-center gap-2 text-xs rounded-full
-            ring-[1.5px] ring-gray-300 px-2 flex"
-          />
-          <div className="flex items-center gap-4 self-end">
-            <ImageButton
-              btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-              img="/filter.png"
-              width={14}
-              height={14}
-            />
-            <ImageButton
-              btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-              img="/sort.png"
-              width={14}
-              height={14}
-            />
-            {role === "admin" && <FormModal table="result" type="create" />}
-          </div>
-        </div>
-      </div>
-
-      <Table columns={columns} renderRow={renderRow} data={resultsData} />
-
-      <Pagination />
-    </div>
+    <ListPage<ResultList>
+      title="All results"
+      searchParams={searchParams}
+      tableColumns={columns}
+      renderRow={renderRow}
+      getQuery={getQuery}
+      fetchData={fetchData}
+      createModal={<FormModal table="exam" type="create" />}
+    />
   );
 }

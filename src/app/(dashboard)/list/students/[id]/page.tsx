@@ -115,19 +115,34 @@ export default function Page() {
         rightDivStyles="w-full xl:w-1/3 flex flex-col gap-4"
       >
         <ShortcutsCard>
-          <ShortcutsCard.Link href="/" className="bg-lamaSkyLight">
+          <ShortcutsCard.Link
+            href={`/list/lessons?classId=${2}`}
+            className="bg-lamaSkyLight"
+          >
             Student&apos;s Lessons
           </ShortcutsCard.Link>
-          <ShortcutsCard.Link href="/" className="bg-lamaPurpleLight">
+          <ShortcutsCard.Link
+            href={`/list/teachers?classId=${2}`}
+            className="bg-lamaPurpleLight"
+          >
             Student&apos;s teachers
           </ShortcutsCard.Link>
-          <ShortcutsCard.Link href="/" className="bg-lamaYellowLight">
+          <ShortcutsCard.Link
+            href={`/list/exams?classId=${2}`}
+            className="bg-lamaYellowLight"
+          >
             Student&apos;s exams
           </ShortcutsCard.Link>
-          <ShortcutsCard.Link href="/" className="bg-pink-50">
+          <ShortcutsCard.Link
+            href={`/list/assignments?classId=${2}`}
+            className="bg-pink-50"
+          >
             Student&apos;s assignments
           </ShortcutsCard.Link>
-          <ShortcutsCard.Link href="/" className="bg-lamaSkyLight">
+          <ShortcutsCard.Link
+            href={`/list/results?studentId=${"student2"}`}
+            className="bg-lamaSkyLight"
+          >
             Student&apos;s results
           </ShortcutsCard.Link>
         </ShortcutsCard>

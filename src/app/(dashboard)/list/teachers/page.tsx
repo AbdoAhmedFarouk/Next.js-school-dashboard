@@ -1,25 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Pagination from "@/app/_components/Pagination";
-import SearchField from "@/app/_components/SearchField";
-import Table from "@/app/_components/Table";
-import ImageButton from "@/app/_components/ImageButton";
+import { Class, Subject, Teacher } from "@prisma/client";
+import useGetTeachers from "./useGetTeachers";
 
-import { role, teachersData } from "@/app/_lib/data";
 import FormModal from "@/app/_components/FormModal";
+import ImageButton from "@/app/_components/ImageButton";
+import ListPage from "@/app/_components/ListPage";
 
-type Teacher = {
-  id: number;
-  teacherId: string;
-  name: string;
-  email?: string;
-  photo: string;
-  phone: string;
-  subjects: string[];
-  classes: string[];
-  address: string;
-};
+import { role } from "@/app/_lib/data";
+import { PageProps } from "@/app/_Validators/searchParams-validator";
+
+type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
 const columns = [
   {
@@ -57,80 +49,63 @@ const columns = [
   },
 ];
 
-export default function Page() {
-  const renderRow = (item: Teacher) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4">
-        <Image
-          src={item.photo}
-          alt=""
-          width={40}
-          height={40}
-          className="md:hidden xl:block size-10 rounded-full object-cover"
-        />
-        <div className="flex flex-col">
-          <h3 className="font-semibold">{item.name}</h3>
-          <p className="text-xs text-gray-500">{item?.email}</p>
-        </div>
-      </td>
-      <td className="hidden md:table-cell">{item.teacherId}</td>
-      <td className="hidden md:table-cell">{item.subjects.join(",")}</td>
-      <td className="hidden md:table-cell">{item.classes.join(",")}</td>
-      <td className="hidden md:table-cell">{item.phone}</td>
-      <td className="hidden md:table-cell">{item.address}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <ImageButton
-              btnStyles="size-7 flex items-center justify-center rounded-full bg-lamaSky"
-              img="/view.png"
-              width={16}
-              height={16}
-            />
-          </Link>
-          {role === "admin" && (
-            <FormModal table="teacher" type="delete" id={item.id} />
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+const renderRow = (item: TeacherList) => (
+  <tr
+    key={item.id}
+    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+  >
+    <td className="flex items-center gap-4 p-4">
+      <Image
+        src={item.img || "/noAvatar.png"}
+        alt=""
+        width={40}
+        height={40}
+        className="md:hidden xl:block size-10 rounded-full object-cover"
+      />
+      <div className="flex flex-col">
+        <h3 className="font-semibold">{item.name}</h3>
+        <p className="text-xs text-gray-500">{item?.email}</p>
+      </div>
+    </td>
+    <td className="hidden md:table-cell">{item.username}</td>
+    <td className="hidden md:table-cell">
+      {item.subjects.map((subject) => subject.name).join(",")}
+    </td>
+    <td className="hidden md:table-cell">
+      {item.classes.map((classItem) => classItem.name).join(",")}
+    </td>
+    <td className="hidden md:table-cell">{item.phone}</td>
+    <td className="hidden md:table-cell">{item.address}</td>
+    <td>
+      <div className="flex items-center gap-2">
+        <Link href={`/list/teachers/${item.id}`}>
+          <ImageButton
+            btnStyles="size-7 flex items-center justify-center rounded-full bg-lamaSky"
+            img="/view.png"
+            width={16}
+            height={16}
+          />
+        </Link>
+        {role === "admin" && (
+          <FormModal table="teacher" type="delete" id={item.id} />
+        )}
+      </div>
+    </td>
+  </tr>
+);
+
+export default function Page({ searchParams }: PageProps) {
+  const { getQuery, fetchData } = useGetTeachers();
 
   return (
-    <div className="bg-white flex-1 rounded-md p-4 mt-0">
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Teachers</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <SearchField
-            parentDivStyles="w-full md:w-auto items-center gap-2 text-xs rounded-full
-            ring-[1.5px] ring-gray-300 px-2 flex"
-          />
-          <div className="flex items-center gap-4 self-end">
-            <ImageButton
-              btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-              img="/filter.png"
-              width={14}
-              height={14}
-            />
-            <ImageButton
-              btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-              img="/sort.png"
-              width={14}
-              height={14}
-            />
-            {role === "admin" && <FormModal table="teacher" type="create" />}
-          </div>
-        </div>
-      </div>
-
-      <Table columns={columns} renderRow={renderRow} data={teachersData} />
-
-      <Pagination />
-    </div>
+    <ListPage<TeacherList>
+      title="All Teachers"
+      searchParams={searchParams}
+      tableColumns={columns}
+      renderRow={renderRow}
+      getQuery={getQuery}
+      fetchData={fetchData}
+      createModal={<FormModal table="teacher" type="create" />}
+    />
   );
 }

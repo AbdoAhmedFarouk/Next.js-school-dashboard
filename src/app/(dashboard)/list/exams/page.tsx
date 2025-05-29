@@ -1,17 +1,18 @@
 import FormModal from "@/app/_components/FormModal";
-import ImageButton from "@/app/_components/ImageButton";
-import Pagination from "@/app/_components/Pagination";
-import SearchField from "@/app/_components/SearchField";
-import Table from "@/app/_components/Table";
+import ListPage from "@/app/_components/ListPage";
 
-import { examsData, role } from "@/app/_lib/data";
+import { role } from "@/app/_lib/data";
+import { PageProps } from "@/app/_Validators/searchParams-validator";
+import { Exam } from "@prisma/client";
+import useGetExams from "./useGetExams";
+import { dateFormatter } from "@/app/_Validators/dateFormatter";
 
-type Exam = {
-  id: number;
-  subject: string;
-  class: string;
-  teacher: string;
-  date: string;
+type ExamList = Exam & {
+  lesson: {
+    teacher: { name: string; surname: string };
+    subject: { name: string };
+    class: { name: string };
+  };
 };
 
 const columns = [
@@ -39,64 +40,43 @@ const columns = [
   },
 ];
 
-export default function Page() {
-  const renderRow = (item: Exam) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4">{item.subject}</td>
-      <td>{item.class}</td>
-      <td className="hidden md:table-cell">{item.teacher}</td>
-      <td className="hidden md:table-cell">{item.date}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          {role === "admin" ||
-            (role === "teacher" && (
-              <>
-                <FormModal table="exam" type="update" data={item} />
-                <FormModal table="exam" type="delete" id={item.id} />
-              </>
-            ))}
-        </div>
-      </td>
-    </tr>
-  );
+const renderRow = (item: ExamList) => (
+  <tr
+    key={item.id}
+    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+  >
+    <td className="flex items-center gap-4 p-4">{item.lesson.subject.name}</td>
+    <td>{item.lesson.class.name}</td>
+    <td className="hidden md:table-cell">
+      {item.lesson.teacher.name + " " + item.lesson.teacher.surname}
+    </td>
+    <td className="hidden md:table-cell">{dateFormatter(item.startTime)}</td>
+    <td>
+      <div className="flex items-center gap-2">
+        {role === "admin" ||
+          (role === "teacher" && (
+            <>
+              <FormModal table="exam" type="update" data={item} />
+              <FormModal table="exam" type="delete" id={item.id} />
+            </>
+          ))}
+      </div>
+    </td>
+  </tr>
+);
+
+export default function Page({ searchParams }: PageProps) {
+  const { getQuery, fetchData } = useGetExams();
 
   return (
-    <div className="bg-white flex-1 rounded-md p-4 mt-0">
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold capitalize">
-          All exams
-        </h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <SearchField
-            parentDivStyles="w-full md:w-auto items-center gap-2 text-xs rounded-full
-            ring-[1.5px] ring-gray-300 px-2 flex"
-          />
-          <div className="flex items-center gap-4 self-end">
-            <ImageButton
-              btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-              img="/filter.png"
-              width={14}
-              height={14}
-            />
-            <ImageButton
-              btnStyles="size-8 flex items-center justify-center rounded-full
-              bg-lamaYellow"
-              img="/sort.png"
-              width={14}
-              height={14}
-            />
-            {role === "admin" && <FormModal table="exam" type="create" />}
-          </div>
-        </div>
-      </div>
-
-      <Table columns={columns} renderRow={renderRow} data={examsData} />
-
-      <Pagination />
-    </div>
+    <ListPage<ExamList>
+      title="All exams"
+      searchParams={searchParams}
+      tableColumns={columns}
+      renderRow={renderRow}
+      getQuery={getQuery}
+      fetchData={fetchData}
+      createModal={<FormModal table="exam" type="create" />}
+    />
   );
 }
