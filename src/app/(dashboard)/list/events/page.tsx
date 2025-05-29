@@ -102,7 +102,7 @@ export default function Page() {
 
       <Table columns={columns} renderRow={renderRow} data={eventsData} />
 
-      <Pagination />
+      {/* <Pagination /> */}
     </div>
   );
 }
