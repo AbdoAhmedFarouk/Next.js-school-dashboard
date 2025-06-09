@@ -2,7 +2,7 @@ import prisma from "@/app/_lib/prisma";
 import { Prisma } from "@prisma/client";
 import { ITEM_PER_PAGE } from "@/app/_Validators/settings";
 
-function useGetResults() {
+function useGetResults(role: string | null, currentUserId: string | null) {
   const getQuery = (params: {
     [key: string]: string;
   }): Prisma.ResultWhereInput => {
@@ -17,6 +17,29 @@ function useGetResults() {
         { exam: { title: { contains: params.search, mode: "insensitive" } } },
         { student: { name: { contains: params.search, mode: "insensitive" } } },
       ];
+    }
+
+    switch (role) {
+      case "admin":
+        break;
+      case "teacher":
+        query.OR = [
+          { exam: { lesson: { teacherId: currentUserId! } } },
+          { assignment: { lesson: { teacherId: currentUserId! } } },
+        ];
+        break;
+
+      case "student":
+        query.studentId = currentUserId!;
+        break;
+
+      case "parent":
+        query.student = {
+          parentId: currentUserId!,
+        };
+        break;
+      default:
+        break;
     }
 
     return query;

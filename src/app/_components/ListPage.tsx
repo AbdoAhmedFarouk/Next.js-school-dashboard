@@ -2,7 +2,8 @@ import Pagination from "@/app/_components/Pagination";
 import SearchField from "@/app/_components/SearchField";
 import Table from "@/app/_components/Table";
 import ImageButton from "@/app/_components/ImageButton";
-import { role } from "../_lib/data";
+
+import { getUserRole } from "../_lib/utils";
 
 interface ListPageProps<T> {
   title: string;
@@ -13,6 +14,7 @@ interface ListPageProps<T> {
   fetchData: (query: any, pageNumber: number) => Promise<[T[], number]>;
   createModal?: React.ReactNode;
   extraButtons?: React.ReactNode;
+  allowedRole?: string;
 }
 
 export default async function ListPage<T>({
@@ -24,9 +26,13 @@ export default async function ListPage<T>({
   fetchData,
   createModal,
   extraButtons,
+  allowedRole,
 }: ListPageProps<T>) {
   const { page, ...queryParams } = searchParams;
+  const { role } = await getUserRole();
+
   const pageNumber = page ? +page : 1;
+  const isRoleAllowed = allowedRole?.includes(role!);
 
   const parsedQueryParams = Object.entries(queryParams).reduce(
     (acc, [key, value]) => {
@@ -70,7 +76,7 @@ export default async function ListPage<T>({
                 />
               </>
             )}
-            {role === "admin" && createModal}
+            {(role === "admin" || isRoleAllowed) && createModal}
           </div>
         </div>
       </div>

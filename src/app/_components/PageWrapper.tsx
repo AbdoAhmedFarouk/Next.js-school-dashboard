@@ -1,6 +1,5 @@
-import React from "react";
 import Announcements from "./Announcements";
-import EventCalendar from "./EventCalendar";
+import EventCalendarContainer from "./EventCalendarContainer ";
 import Performance from "./Performance";
 
 type PageWrapperProps = {
@@ -28,17 +27,19 @@ function Right({
   showPerformance = false,
   showAnnouncements = true,
   rightDivStyles,
+  searchParams,
 }: {
   children?: React.ReactNode;
   showCalendar?: boolean;
   showPerformance?: boolean;
   showAnnouncements?: boolean;
   rightDivStyles: string;
+  searchParams: { [key: string]: string | undefined };
 }) {
   return (
     <div className={rightDivStyles}>
       {children}
-      {showCalendar && <EventCalendar />}
+      {showCalendar && <EventCalendarContainer searchParams={searchParams} />}
       {showPerformance && <Performance />}
       {showAnnouncements && <Announcements />}
     </div>
