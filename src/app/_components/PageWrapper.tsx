@@ -34,12 +34,14 @@ function Right({
   showPerformance?: boolean;
   showAnnouncements?: boolean;
   rightDivStyles: string;
-  searchParams: { [key: string]: string | undefined };
+  searchParams?: { [key: string]: string | undefined };
 }) {
   return (
     <div className={rightDivStyles}>
       {children}
-      {showCalendar && <EventCalendarContainer searchParams={searchParams} />}
+      {showCalendar && (
+        <EventCalendarContainer searchParams={searchParams ?? {}} />
+      )}
       {showPerformance && <Performance />}
       {showAnnouncements && <Announcements />}
     </div>

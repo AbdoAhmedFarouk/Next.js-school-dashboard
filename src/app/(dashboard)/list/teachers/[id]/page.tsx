@@ -1,12 +1,14 @@
 import Image from "next/image";
+import { getUserRole } from "@/app/_lib/utils";
 
 import BigCalendar from "@/app/_components/BigCalendar";
 import PageWrapper from "@/app/_components/PageWrapper";
 import ShortcutsCard from "@/app/_components/Shortcuts";
 import FormModal from "@/app/_components/FormModal";
-import { role } from "@/app/_lib/data";
 
-export default function Page() {
+export default async function Page() {
+  const { role } = await getUserRole();
+
   return (
     <PageWrapper parentDivStyles="flex-1 p-4 flex flex-col xl:flex-row gap-4">
       <PageWrapper.Left leftDivStyles="w-full xl:w-2/3">
