@@ -1,15 +1,14 @@
 "use client";
 
 import {
-  BarChart,
   Bar,
-  Rectangle,
-  XAxis,
-  YAxis,
+  BarChart,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
 
 const AttendanceChart = ({

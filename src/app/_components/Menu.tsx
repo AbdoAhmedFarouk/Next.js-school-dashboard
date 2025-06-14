@@ -1,6 +1,6 @@
-import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
+import { getUserRole } from "../_lib/utils";
 
 const menuItems = [
   {
@@ -118,8 +118,7 @@ const menuItems = [
 ];
 
 export default async function Menu() {
-  const user = await currentUser();
-  const role = user?.publicMetadata.role as string;
+  const { role } = await getUserRole();
 
   return (
     <div className="mt-4 text-sm">
@@ -130,7 +129,7 @@ export default async function Menu() {
           </span>
 
           {item.items.map((childItem) => {
-            if (childItem.visible.includes(role)) {
+            if (childItem.visible.includes(role!)) {
               return (
                 <Link
                   href={childItem.href}

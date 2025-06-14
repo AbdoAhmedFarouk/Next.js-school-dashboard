@@ -1,10 +1,9 @@
 import { Subject, Teacher } from "@prisma/client";
 import useGetSubjects from "./useGetSubjects";
 
+import FormContainer from "@/app/_components/FormContainer";
 import ListPage from "@/app/_components/ListPage";
-import FormModal from "@/app/_components/FormModal";
 
-import { getUserRole } from "@/app/_lib/utils";
 import { PageProps } from "@/app/_Validators/searchParams-validator";
 
 type SubjectList = Subject & { teachers: Teacher[] };
@@ -25,8 +24,7 @@ const columns = [
   },
 ];
 
-export default async function Page({ searchParams }: PageProps) {
-  const { role } = await getUserRole();
+export default function Page({ searchParams }: PageProps) {
   const { getQuery, fetchData } = useGetSubjects();
 
   const renderRow = (item: SubjectList) => (
@@ -40,12 +38,8 @@ export default async function Page({ searchParams }: PageProps) {
       </td>
       <td>
         <div className="flex items-center gap-2">
-          {role === "admin" && (
-            <>
-              <FormModal table="subject" type="update" data={item} />
-              <FormModal table="subject" type="delete" id={item.id} />
-            </>
-          )}
+          <FormContainer table="subject" type="update" data={item} />
+          <FormContainer table="subject" type="delete" id={item.id} />
         </div>
       </td>
     </tr>
@@ -59,7 +53,7 @@ export default async function Page({ searchParams }: PageProps) {
       renderRow={renderRow}
       getQuery={getQuery}
       fetchData={fetchData}
-      createModal={<FormModal table="subject" type="create" />}
+      createModal={<FormContainer table="subject" type="create" />}
     />
   );
 }

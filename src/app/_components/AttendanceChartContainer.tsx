@@ -7,7 +7,6 @@ export default async function AttendanceChartContainer() {
   const dayOfWeek = today.getDay();
   const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
-
   const lastMonday = new Date(today);
 
   lastMonday.setDate(today.getDate() - daysSinceMonday);
@@ -23,7 +22,6 @@ export default async function AttendanceChartContainer() {
       present: true,
     },
   });
-
 
   const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 

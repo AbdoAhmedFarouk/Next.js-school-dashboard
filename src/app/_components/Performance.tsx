@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { PureComponent } from "react";
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
+import { Pie, PieChart, ResponsiveContainer } from "recharts";
 
 const data = [
   { name: "Group A", value: 92, fill: "#c3ebfa" },

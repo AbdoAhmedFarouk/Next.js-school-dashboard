@@ -5,7 +5,7 @@ import { Class, Subject, Teacher } from "@prisma/client";
 import useGetTeachers from "./useGetTeachers";
 
 import ListPage from "@/app/_components/ListPage";
-import FormModal from "@/app/_components/FormModal";
+import FormContainer from "@/app/_components/FormContainer";
 import ImageButton from "@/app/_components/ImageButton";
 
 import { getUserRole } from "@/app/_lib/utils";
@@ -95,7 +95,7 @@ export default async function Page({ searchParams }: PageProps) {
             />
           </Link>
           {role === "admin" && (
-            <FormModal table="teacher" type="delete" id={item.id} />
+            <FormContainer table="teacher" type="delete" id={item.id} />
           )}
         </div>
       </td>
@@ -110,7 +110,7 @@ export default async function Page({ searchParams }: PageProps) {
       renderRow={renderRow}
       getQuery={getQuery}
       fetchData={fetchData}
-      createModal={<FormModal table="teacher" type="create" />}
+      createModal={<FormContainer table="teacher" type="create" />}
     />
   );
 }

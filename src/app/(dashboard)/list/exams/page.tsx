@@ -1,7 +1,7 @@
 import { Exam } from "@prisma/client";
 import useGetExams from "./useGetExams";
 
-import FormModal from "@/app/_components/FormModal";
+import FormContainer from "@/app/_components/FormContainer";
 import ListPage from "@/app/_components/ListPage";
 
 import { dateFormatter } from "@/app/_Validators/dateFormatter";
@@ -66,8 +66,8 @@ export default async function Page({ searchParams }: PageProps) {
         <div className="flex items-center gap-2">
           {(role === "admin" || role === "teacher") && (
             <>
-              <FormModal table="exam" type="update" data={item} />
-              <FormModal table="exam" type="delete" id={item.id} />
+              <FormContainer table="exam" type="update" data={item} />
+              <FormContainer table="exam" type="delete" id={item.id} />
             </>
           )}
         </div>
@@ -84,7 +84,7 @@ export default async function Page({ searchParams }: PageProps) {
       renderRow={renderRow}
       getQuery={getQuery}
       fetchData={fetchData}
-      createModal={<FormModal table="exam" type="create" />}
+      createModal={<FormContainer table="exam" type="create" />}
     />
   );
 }

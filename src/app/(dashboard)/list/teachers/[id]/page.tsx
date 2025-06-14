@@ -1,24 +1,52 @@
+import { Teacher } from "@prisma/client";
 import Image from "next/image";
+import { notFound } from "next/navigation";
+
+import prisma from "@/app/_lib/prisma";
 import { getUserRole } from "@/app/_lib/utils";
 
-import BigCalendar from "@/app/_components/BigCalendar";
+import BigCalendarContainer from "@/app/_components/BigCalendarContainer";
+import FormContainer from "@/app/_components/FormContainer";
 import PageWrapper from "@/app/_components/PageWrapper";
 import ShortcutsCard from "@/app/_components/Shortcuts";
-import FormModal from "@/app/_components/FormModal";
+import { dateFormatter } from "@/app/_Validators/dateFormatter";
 
-export default async function Page() {
+export default async function Page({
+  params: { id },
+}: {
+  params: { id: string };
+}) {
   const { role } = await getUserRole();
+
+  const teacher:
+    | (Teacher & {
+        _count: { subjects: number; lessons: number; classes: number };
+      })
+    | null = await prisma.teacher.findUnique({
+    where: { id },
+    include: {
+      _count: {
+        select: {
+          subjects: true,
+          lessons: true,
+          classes: true,
+        },
+      },
+    },
+  });
+
+  if (!teacher) {
+    return notFound();
+  }
 
   return (
     <PageWrapper parentDivStyles="flex-1 p-4 flex flex-col xl:flex-row gap-4">
       <PageWrapper.Left leftDivStyles="w-full xl:w-2/3">
-        {/* top */}
         <div className="flex flex-col lg:flex-row gap-4">
-          {/* user info card */}
           <div className="bg-lamaSky py-6 px-4 rounded-md flex-1 flex gap-4">
             <div className="w-1/3">
               <Image
-                src="https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                src={teacher.img || "/noAvatar.png"}
                 alt=""
                 width={144}
                 height={144}
@@ -27,26 +55,11 @@ export default async function Page() {
             </div>
             <div className="w-2/3 flex flex-col justify-between gap-4">
               <div className="flex items-center gap-4">
-                <h1 className="text-xl font-semibold">Abdelrahman Ahmed</h1>
+                <h1 className="text-xl font-semibold">
+                  {teacher.name + " " + teacher.surname}
+                </h1>
                 {role === "admin" && (
-                  <FormModal
-                    table="teacher"
-                    type="update"
-                    data={{
-                      id: 1,
-                      username: "deanguerrero",
-                      email: "deanguerrero@gmail.com",
-                      password: "password",
-                      firstName: "Dean",
-                      lastName: "Guerrero",
-                      phone: "+1 234 567 89",
-                      address: "1234 Main St, Anytown, USA",
-                      bloodType: "A+",
-                      dateOfBirth: "2000-01-01",
-                      sex: "male",
-                      img: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200",
-                    }}
-                  />
+                  <FormContainer table="teacher" type="update" data={teacher} />
                 )}
               </div>
               <p className="text-sm text-gray-500">
@@ -56,27 +69,25 @@ export default async function Page() {
               <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
                 <div className="w-full md:w-1/3 flex items-center gap-2 lg:w-full 2xl:w-1/3">
                   <Image src="/blood.png" alt="" width={14} height={14} />
-                  <span>A+</span>
+                  <span>{teacher.bloodType}</span>
                 </div>
                 <div className="w-full md:w-1/3 flex items-center gap-2 lg:w-full 2xl:w-1/3">
                   <Image src="/date.png" alt="" width={14} height={14} />
-                  <span>October 2025</span>
+                  <span>{dateFormatter(teacher.birthday)}</span>
                 </div>
                 <div className="w-full md:w-1/3 flex items-center gap-2 lg:w-full 2xl:w-1/3">
                   <Image src="/mail.png" alt="" width={14} height={14} />
-                  <span>user@gmail.com</span>
+                  <span>{teacher.email || "-"}</span>
                 </div>
                 <div className="w-full md:w-1/3 flex items-center gap-2 lg:w-full 2xl:w-1/3">
                   <Image src="/phone.png" alt="" width={14} height={14} />
-                  <span>1 234 456</span>
+                  <span>{teacher.phone || "-"}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* small cards */}
           <div className=" flex-1 flex gap-4 justify-between flex-wrap">
-            {/* card */}
             <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[47%] xl:w-[45%] 2xl:w-[47%]">
               <Image
                 src="/singleAttendance.png"
@@ -90,7 +101,6 @@ export default async function Page() {
                 <span className="text-sm text-gray-400">Attendance</span>
               </div>
             </div>
-            {/* card */}
             <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[47%] xl:w-[45%] 2xl:w-[47%]">
               <Image
                 src="/singleBranch.png"
@@ -100,11 +110,12 @@ export default async function Page() {
                 className="size-6"
               />
               <div>
-                <h1 className="text-xl font-semibold">2</h1>
+                <h1 className="text-xl font-semibold">
+                  {teacher._count.subjects}
+                </h1>
                 <span className="text-sm text-gray-400">Branches</span>
               </div>
             </div>
-            {/* card */}
             <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[47%] xl:w-[45%] 2xl:w-[47%]">
               <Image
                 src="/singleLesson.png"
@@ -114,11 +125,12 @@ export default async function Page() {
                 className="size-6"
               />
               <div>
-                <h1 className="text-xl font-semibold">6</h1>
+                <h1 className="text-xl font-semibold">
+                  {teacher._count.lessons}
+                </h1>
                 <span className="text-sm text-gray-400">Lessons</span>
               </div>
             </div>
-            {/* card */}
             <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[47%] xl:w-[45%] 2xl:w-[47%]">
               <Image
                 src="/singleClass.png"
@@ -128,17 +140,18 @@ export default async function Page() {
                 className="size-6"
               />
               <div>
-                <h1 className="text-xl font-semibold">6</h1>
+                <h1 className="text-xl font-semibold">
+                  {teacher._count.classes}
+                </h1>
                 <span className="text-sm text-gray-400">Classes</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* bottom */}
         <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
           <h1>Teacher&apos;s Schedule</h1>
-          <BigCalendar />
+          <BigCalendarContainer type="teacherId" id={teacher.id} />
         </div>
       </PageWrapper.Left>
 
@@ -148,31 +161,31 @@ export default async function Page() {
       >
         <ShortcutsCard>
           <ShortcutsCard.Link
-            href={`/list/classes?supervisorId=${"teacher2"}`}
+            href={`/list/classes?supervisorId=${teacher.id}`}
             className="bg-lamaSkyLight"
           >
             Teacher&apos;s Classes
           </ShortcutsCard.Link>
           <ShortcutsCard.Link
-            href={`/list/students?teacherId=${"teacher2"}`}
+            href={`/list/students?teacherId=${teacher.id}`}
             className="bg-lamaPurpleLight"
           >
             Teacher&apos;s Students
           </ShortcutsCard.Link>
           <ShortcutsCard.Link
-            href={`/list/lessons?teacherId=${"teacher2"}`}
+            href={`/list/lessons?teacherId=${teacher.id}`}
             className="bg-lamaYellowLight"
           >
             Teacher&apos;s Lessons
           </ShortcutsCard.Link>
           <ShortcutsCard.Link
-            href={`/list/exams?teacherId=${"teacher2"}`}
+            href={`/list/exams?teacherId=${teacher.id}`}
             className="bg-pink-50"
           >
             Teacher&apos;s Exams
           </ShortcutsCard.Link>
           <ShortcutsCard.Link
-            href={`/list/assignments?teacherId=${"teacher2"}`}
+            href={`/list/assignments?teacherId=${teacher.id}`}
             className="bg-lamaSkyLight"
           >
             Teacher&apos;s Assignments

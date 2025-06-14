@@ -1,7 +1,7 @@
 import { Class, Teacher } from "@prisma/client";
 import useGetClasses from "./useGetClasses";
 
-import FormModal from "@/app/_components/FormModal";
+import FormContainer from "@/app/_components/FormContainer";
 import ListPage from "@/app/_components/ListPage";
 
 import { getUserRole } from "@/app/_lib/utils";
@@ -58,8 +58,8 @@ export default async function Page({ searchParams }: PageProps) {
         <div className="flex items-center gap-2">
           {role === "admin" && (
             <>
-              <FormModal table="class" type="update" data={item} />
-              <FormModal table="class" type="delete" id={item.id} />
+              <FormContainer table="class" type="update" data={item} />
+              <FormContainer table="class" type="delete" id={item.id} />
             </>
           )}
         </div>
@@ -75,7 +75,7 @@ export default async function Page({ searchParams }: PageProps) {
       renderRow={renderRow}
       getQuery={getQuery}
       fetchData={fetchData}
-      createModal={<FormModal table="class" type="create" />}
+      createModal={<FormContainer table="class" type="create" />}
     />
   );
 }
