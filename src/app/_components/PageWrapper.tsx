@@ -40,7 +40,7 @@ function Right({
     <div className={rightDivStyles}>
       {children}
       {showCalendar && (
-        <EventCalendarContainer searchParams={searchParams ?? {}} />
+        <EventCalendarContainer searchParams={searchParams || {}} />
       )}
       {showPerformance && <Performance />}
       {showAnnouncements && <Announcements />}

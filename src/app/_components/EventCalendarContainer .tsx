@@ -3,7 +3,7 @@ import EventList from "./EventList";
 import EventCalendar from "./EventCalendar";
 import { PageProps } from "../_Validators/searchParams-validator";
 
-const EventCalendarContainer = async ({ searchParams }: PageProps) => {
+const EventCalendarContainer = ({ searchParams }: PageProps) => {
   const { date } = searchParams;
 
   return (

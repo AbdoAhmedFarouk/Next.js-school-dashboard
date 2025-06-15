@@ -3,14 +3,24 @@ import prisma from "../_lib/prisma";
 const EventList = async ({ dateParam }: { dateParam: string | undefined }) => {
   const date = dateParam ? new Date(dateParam) : new Date();
 
-  const data = await prisma.event.findMany({
-    where: {
-      startTime: {
-        gte: new Date(date.setHours(0, 0, 0, 0)),
-        lte: new Date(date.setHours(23, 59, 59, 999)),
+  if (isNaN(date.getTime())) {
+    return <p>Invalid date</p>;
+  }
+
+  let data = [];
+  try {
+    data = await prisma.event.findMany({
+      where: {
+        startTime: {
+          gte: new Date(date.setHours(0, 0, 0, 0)),
+          lte: new Date(date.setHours(23, 59, 59, 999)),
+        },
       },
-    },
-  });
+    });
+  } catch (err) {
+    console.error("Error fetching events", err);
+    return <p>Could not load events.</p>;
+  }
 
   return data.map((event) => (
     <div
