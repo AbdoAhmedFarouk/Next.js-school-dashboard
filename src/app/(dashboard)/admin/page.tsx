@@ -3,9 +3,45 @@ import CountChartContainer from "@/app/_components/CountChartContainer";
 import FinanceChart from "@/app/_components/FinanceChart";
 import PageWrapper from "@/app/_components/PageWrapper";
 import UserCard from "@/app/_components/UserCard";
+import prisma from "@/app/_lib/prisma";
 import { PageProps } from "@/app/_Validators/searchParams-validator";
 
-export default function Page({ searchParams }: PageProps) {
+// export async function generateStaticParams() {
+//   const data = await prisma.event.findMany({
+//     where: {
+//       startTime: {
+//         gte: new Date(date.setHours(0, 0, 0, 0)),
+//         lte: new Date(date.setHours(23, 59, 59, 999)),
+//       },
+//     },
+//   });
+
+//   return data;
+// }
+
+type EventType = {
+  id: number;
+  title: string;
+  startTime: Date;
+  description: string;
+  endTime: Date;
+  classId: number | null;
+};
+
+export default async function Page({ searchParams }: PageProps) {
+  const { date } = searchParams;
+
+  const isDate = date ? new Date(date) : new Date();
+
+  const data: EventType[] = await prisma.event.findMany({
+    where: {
+      startTime: {
+        gte: new Date(isDate!.setHours(0, 0, 0, 0)),
+        lte: new Date(isDate!.setHours(23, 59, 59, 999)),
+      },
+    },
+  });
+
   return (
     <PageWrapper parentDivStyles="flex gap-4 p-4 flex-col md:flex-row">
       <PageWrapper.Left leftDivStyles="w-full lg:w-2/3 flex flex-col gap-8">
@@ -29,7 +65,7 @@ export default function Page({ searchParams }: PageProps) {
       </PageWrapper.Left>
 
       <PageWrapper.Right
-        searchParams={searchParams}
+        dateParamData={data}
         showCalendar
         rightDivStyles="w-full lg:w-1/3 flex flex-col gap-8"
       />

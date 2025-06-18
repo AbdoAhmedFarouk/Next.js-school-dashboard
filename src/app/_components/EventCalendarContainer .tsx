@@ -1,11 +1,19 @@
 import Image from "next/image";
 import EventList from "./EventList";
 import EventCalendar from "./EventCalendar";
-import { PageProps } from "../_Validators/searchParams-validator";
 
-const EventCalendarContainer = ({ searchParams }: PageProps) => {
-  const { date } = searchParams;
-
+const EventCalendarContainer = ({
+  dateParamData,
+}: {
+  dateParamData: {
+    id: number;
+    title: string;
+    startTime: Date;
+    description: string;
+    endTime: Date;
+    classId: number | null;
+  }[];
+}) => {
   return (
     <div className="bg-white p-4 rounded-md">
       <EventCalendar />
@@ -14,7 +22,7 @@ const EventCalendarContainer = ({ searchParams }: PageProps) => {
         <Image src="/moreDark.png" alt="" width={20} height={20} />
       </div>
       <div className="flex flex-col gap-4">
-        <EventList dateParam={date} />
+        <EventList dateParamData={dateParamData} />
       </div>
     </div>
   );

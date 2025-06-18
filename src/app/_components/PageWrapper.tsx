@@ -27,20 +27,27 @@ function Right({
   showPerformance = false,
   showAnnouncements = true,
   rightDivStyles,
-  searchParams,
+  dateParamData,
 }: {
   children?: React.ReactNode;
   showCalendar?: boolean;
   showPerformance?: boolean;
   showAnnouncements?: boolean;
   rightDivStyles: string;
-  searchParams?: { [key: string]: string | undefined };
+  dateParamData?: {
+    id: number;
+    title: string;
+    startTime: Date;
+    description: string;
+    endTime: Date;
+    classId: number | null;
+  }[];
 }) {
   return (
     <div className={rightDivStyles}>
       {children}
       {showCalendar && (
-        <EventCalendarContainer searchParams={searchParams || {}} />
+        <EventCalendarContainer dateParamData={dateParamData!} />
       )}
       {showPerformance && <Performance />}
       {showAnnouncements && <Announcements />}
