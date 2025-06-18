@@ -38,6 +38,8 @@ type ResultList = {
 };
 
 export default async function Page({ searchParams }: PageProps) {
+  const { page, ...queryParams } = searchParams;
+
   const { role, currentUserId } = await getUserRole();
   const { getQuery, fetchData } = useGetResults(role, currentUserId);
 
@@ -126,7 +128,8 @@ export default async function Page({ searchParams }: PageProps) {
     <ListPage<ResultList>
       title="All results"
       allowedRole="teacher"
-      searchParams={searchParams}
+      page={page}
+      queryParams={queryParams}
       tableColumns={columns}
       renderRow={renderRow}
       getQuery={getQuery}

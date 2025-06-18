@@ -18,6 +18,8 @@ type AssignmentList = Assignment & {
 };
 
 export default async function Page({ searchParams }: PageProps) {
+  const { page, ...queryParams } = searchParams;
+
   const { role, currentUserId } = await getUserRole();
   const { getQuery, fetchData } = useGetAssignments(role, currentUserId);
 
@@ -79,8 +81,8 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <ListPage<AssignmentList>
       title="All assignments"
-      allowedRole="teacher"
-      searchParams={searchParams}
+      page={page}
+      queryParams={queryParams}
       tableColumns={columns}
       renderRow={renderRow}
       getQuery={getQuery}

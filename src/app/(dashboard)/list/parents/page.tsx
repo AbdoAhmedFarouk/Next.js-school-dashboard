@@ -10,6 +10,8 @@ import { getUserRole } from "@/app/_lib/utils";
 type ParentList = Parent & { students: Student[] };
 
 export default async function Page({ searchParams }: PageProps) {
+  const { page, ...queryParams } = searchParams;
+
   const { role } = await getUserRole();
   const { getQuery, fetchData } = useGetParents();
 
@@ -75,7 +77,8 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <ListPage<ParentList>
       title="All parents"
-      searchParams={searchParams}
+      page={page}
+      queryParams={queryParams}
       tableColumns={columns}
       renderRow={renderRow}
       getQuery={getQuery}

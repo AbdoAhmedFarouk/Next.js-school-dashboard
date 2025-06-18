@@ -12,6 +12,8 @@ import { PageProps } from "@/app/_Validators/searchParams-validator";
 type AnnouncementList = Announcement & { class: Class | null };
 
 export default async function Page({ searchParams }: PageProps) {
+  const { page, ...queryParams } = searchParams;
+
   const { role, currentUserId } = await getUserRole();
   const { getQuery, fetchData } = useGetAnnouncements(role, currentUserId);
 
@@ -63,7 +65,8 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <ListPage<AnnouncementList>
       title="All Announcements"
-      searchParams={searchParams}
+      page={page}
+      queryParams={queryParams}
       tableColumns={columns}
       renderRow={renderRow}
       getQuery={getQuery}

@@ -6,19 +6,6 @@ import UserCard from "@/app/_components/UserCard";
 import prisma from "@/app/_lib/prisma";
 import { PageProps } from "@/app/_Validators/searchParams-validator";
 
-// export async function generateStaticParams() {
-//   const data = await prisma.event.findMany({
-//     where: {
-//       startTime: {
-//         gte: new Date(date.setHours(0, 0, 0, 0)),
-//         lte: new Date(date.setHours(23, 59, 59, 999)),
-//       },
-//     },
-//   });
-
-//   return data;
-// }
-
 type EventType = {
   id: number;
   title: string;

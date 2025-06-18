@@ -17,6 +17,8 @@ type ExamList = Exam & {
 };
 
 export default async function Page({ searchParams }: PageProps) {
+  const { page, ...queryParams } = searchParams;
+
   const { role, currentUserId } = await getUserRole();
   const { getQuery, fetchData } = useGetExams(role, currentUserId);
 
@@ -79,7 +81,8 @@ export default async function Page({ searchParams }: PageProps) {
     <ListPage<ExamList>
       title="All exams"
       allowedRole="teacher"
-      searchParams={searchParams}
+      page={page}
+      queryParams={queryParams}
       tableColumns={columns}
       renderRow={renderRow}
       getQuery={getQuery}

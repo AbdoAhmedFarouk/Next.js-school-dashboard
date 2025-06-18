@@ -25,6 +25,8 @@ const columns = [
 ];
 
 export default function Page({ searchParams }: PageProps) {
+  const { page, ...queryParams } = searchParams;
+
   const { getQuery, fetchData } = useGetSubjects();
 
   const renderRow = (item: SubjectList) => (
@@ -48,7 +50,8 @@ export default function Page({ searchParams }: PageProps) {
   return (
     <ListPage<SubjectList>
       title="All subjects"
-      searchParams={searchParams}
+      page={page}
+      queryParams={queryParams}
       tableColumns={columns}
       renderRow={renderRow}
       getQuery={getQuery}

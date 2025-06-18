@@ -14,6 +14,8 @@ import { PageProps } from "@/app/_Validators/searchParams-validator";
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
 export default async function Page({ searchParams }: PageProps) {
+  const { page, ...queryParams } = searchParams;
+
   const { role } = await getUserRole();
   const { getQuery, fetchData } = useGetTeachers();
 
@@ -105,7 +107,8 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <ListPage<TeacherList>
       title="All Teachers"
-      searchParams={searchParams}
+      page={page}
+      queryParams={queryParams}
       tableColumns={columns}
       renderRow={renderRow}
       getQuery={getQuery}

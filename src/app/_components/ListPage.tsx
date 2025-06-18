@@ -7,7 +7,8 @@ import { getUserRole } from "../_lib/utils";
 
 interface ListPageProps<T> {
   title: string;
-  searchParams: { [key: string]: string | undefined };
+  page: string | undefined;
+  queryParams: { [key: string]: string | undefined };
   tableColumns: { header: string; accessor: string; className?: string }[];
   renderRow: (item: T) => React.ReactNode;
   getQuery: (queryParams: { [key: string]: string }) => any;
@@ -19,7 +20,8 @@ interface ListPageProps<T> {
 
 export default async function ListPage<T>({
   title,
-  searchParams,
+  page,
+  queryParams,
   tableColumns,
   renderRow,
   getQuery,
@@ -28,13 +30,12 @@ export default async function ListPage<T>({
   extraButtons,
   allowedRole,
 }: ListPageProps<T>) {
-  const { page, ...queryParams } = searchParams;
   const { role } = await getUserRole();
 
   const pageNumber = page ? +page : 1;
   const isRoleAllowed = allowedRole?.includes(role!);
 
-  const parsedQueryParams = Object.entries(queryParams).reduce(
+  const parsedQueryParams = Object.entries(queryParams ?? {}).reduce(
     (acc, [key, value]) => {
       if (value !== undefined) acc[key] = value;
       return acc;
