@@ -15,6 +15,8 @@ type EventType = {
   classId: number | null;
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({ searchParams }: PageProps) {
   const { date } = searchParams;
 
@@ -28,6 +30,8 @@ export default async function Page({ searchParams }: PageProps) {
       },
     },
   });
+
+  console.log(data);
 
   return (
     <PageWrapper parentDivStyles="flex gap-4 p-4 flex-col md:flex-row">
