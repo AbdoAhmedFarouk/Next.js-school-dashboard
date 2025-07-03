@@ -31,8 +31,6 @@ export default async function Page({ searchParams }: PageProps) {
     },
   });
 
-  console.log(data);
-
   return (
     <PageWrapper parentDivStyles="flex gap-4 p-4 flex-col md:flex-row">
       <PageWrapper.Left leftDivStyles="w-full lg:w-2/3 flex flex-col gap-8">

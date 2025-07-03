@@ -10,7 +10,7 @@ const EventList = async ({
     classId: number | null;
   }[];
 }) => {
-  return dateParamData!.map((event) => (
+  return dateParamData?.map((event) => (
     <div
       className="p-5 rounded-md border-2 border-gray-100 border-t-4 odd:border-t-lamaSky
       even:border-t-lamaPurple"

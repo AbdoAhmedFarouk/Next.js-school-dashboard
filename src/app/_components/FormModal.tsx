@@ -45,12 +45,15 @@ const ClassForm = dynamic(() => import("./Forms/ClassForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
-const forms: Record<TableKey, (
-  setIsOpen: Dispatch<SetStateAction<boolean>>,
-  type: "create" | "update",
-  data?: any,
-  relatedData?: any
-) => JSX.Element> = {
+const forms: Record<
+  TableKey,
+  (
+    setIsOpen: Dispatch<SetStateAction<boolean>>,
+    type: "create" | "update",
+    data?: any,
+    relatedData?: any
+  ) => JSX.Element
+> = {
   teacher: (setIsOpen, type, data, relatedData) => (
     <TeacherForm
       setIsOpen={setIsOpen}
@@ -111,12 +114,14 @@ export default function FormModal({
       : "bg-lamaPurple";
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    }
 
     return () => {
       document.body.style.overflow = "";
     };
-  }, []);
+  }, [isOpen]);
 
   return (
     <>
