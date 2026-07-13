@@ -99,17 +99,13 @@ npx prisma db seed
 npm run dev
 ```
 
-Then open http://localhost:3000 in your browser.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Project structure
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- src/app – main app pages, layouts, and route groups
-- src/app/\_components – reusable UI components such as charts, calendars, tables, forms, and navigation
-- src/app/\_lib – server actions, Prisma client setup, and utility functions
-- prisma – Prisma schema and database seed script
+## Learn More
 
-## Notes
+To learn more about Next.js, take a look at the following resources:
 
-- Authentication is handled by Clerk.
-- The seed script creates sample admins, classes, subjects, teachers, students, lessons, exams, assignments, announcements, and events so the dashboard feels populated immediately.
-- The app is intended as a polished demo and starter template for a school management system.
+- [Lama Dev Youtube Channel](https://youtube.com/lamadev) 
+- [Next.js](https://nextjs.org/learn)
